@@ -38,6 +38,7 @@ int main(int argc, char** argv) {
     TList list = hashtable_extractList(ht, 1000, 1500);
     printf("\n\nLista degli elementi con chiave tra 1000 e 1500: ");
     list_print(list);
+    printf("\n");
 
     list_destroy(list);
     list = list_create();
@@ -108,20 +109,54 @@ int main(int argc, char** argv) {
 /* ESERCIZIO 1 */
 
 void hashtable_increase(THashTable* ht, TKey key) {
-    // Completare il corpo della funzione
-    
+    /*Realizzare una funzione che, se esiste un valore associato 
+    con una chiave key ne incrementa di 1 il valore, 
+    altrimenti inserisce nella tabella hash ht il dato (key, 1.0).*/
+
+    TValue * pvalue = hashtable_search(ht, key);
+    if (pvalue != NULL) {
+        *pvalue = value_add(*pvalue, 1.0f);
+    } else {
+        hashtable_insert(ht, key, 1.0f);
+    }  
 }
 
 /* ESERCIZIO 2 */
 void hashtable_decrease(THashTable* ht, TKey key) {
-    // Completare il corpo della funzione
+    /*Realizzare una funzione che, se esiste un valore associato con 
+    la chiave key ne decrementa di 1 il valore corrispondente. 
+    Nel caso in cui il valore diventasse 0, allora il dato viene 
+    rimosso dalla hash table.*/
     
+    TValue * pvalue = hashtable_search(ht, key);
+    if (pvalue != NULL) {
+        *pvalue = value_add(*pvalue, -1.0f);
+        if (value_equal(*pvalue, 0.0f)) {
+            hashtable_delete(ht, key);
+        }
+    }
 }
 
 /* ESERCIZIO 3 */
 TList hashtable_extractList(THashTable* ht, TKey min, TKey max) {
-    // Completare il corpo della funzione
+    /*Scrivere una funzione che restituisce una lista (ordinata per chiave) 
+    che include tutte le coppie (chiave, valore) di una hash table per cui 
+    la chiave è compresa tra due valori min e max.*/
+
+    TList list = list_create();
     
+    for (int i = 0; i < ht->bucket_number; i++)
+    {
+        TNode * curr = ht->bucket[i];
+        while (curr) {
+            if (curr->info.key > min && curr->info.key < max) {
+                list = list_insert(list, curr->info);
+            }
+            curr = curr->link;
+        }
+    }
+
+    return list;
 }
 
 /* ESERCIZIO 4 */
@@ -134,13 +169,13 @@ void hashtable_insertList(THashTable* ht, TList list) {
 /* ESERCIZIO 5 */
 bool subsetWithHashTable(int* set_T, int* set_S, int sizeT, int sizeS) {
     // Completare il corpo della funzione
-    
+    return false;
 }
 
 /* ESERCIZIO 6 */
 bool hashtable_verificaSomma(THashTable* ht, TValue pair_sum) {
     // Completare il corpo della funzione
-    
+    return false;
 }
 
 /* ESERCIZIO 7 */

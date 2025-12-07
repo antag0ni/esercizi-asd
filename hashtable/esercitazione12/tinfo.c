@@ -3,7 +3,7 @@
  */
 
 #include <stdio.h>
-#include "TInfo.h"
+#include "tinfo.h"
 
 bool info_equal (TInfo info1, TInfo info2) {
     return info1.key == info2.key;
