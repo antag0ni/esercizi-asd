@@ -162,25 +162,64 @@ TList hashtable_extractList(THashTable* ht, TKey min, TKey max) {
 /* ESERCIZIO 4 */
 
 void hashtable_insertList(THashTable* ht, TList list) {
-    // Completare il corpo della funzione
+    /*Scrivere una funzione ricorsiva che inserisce in una hash table ht 
+    tutte le coppie (chiave, valore) di una lista solo se la chiave non 
+    è già presente in ht.*/
+
+    if (list == NULL) {
+        return;
+    }
     
+    TValue * pvalue = hashtable_search(ht, list->info.key);
+
+    if (pvalue == NULL) {
+        hashtable_insert(ht, list->info.key, list->info.value);
+    }
+
+    hashtable_insertList(ht, list->link);
 }
 
 /* ESERCIZIO 5 */
 bool subsetWithHashTable(int* set_T, int* set_S, int sizeT, int sizeS) {
-    // Completare il corpo della funzione
-    return false;
+    /*Considerati due insiemi di numeri interi, S = {s1, s2, ..., sm} 
+    e T = {t1, t2, ..., tn}, m ≤ n. Si progetti e sviluppi la funzione che, 
+    utilizzando una hash table opportunamente dimensionata, 
+    verifichi se S (set_S) è un sottoinsieme di T (set_T).*/
+ 
+
+    THashTable * ht = hashtable_create(sizeS);
+
+    for (int i = 0; i < sizeT; i++) {
+        hashtable_insert(ht,hash(set_T[i]), set_T[i]);
+    }
+
+    hashtable_print(ht);
+    
+    for (int i = 0; i < sizeS; i++)
+    {
+        if(hashtable_search(ht, hash(set_S[i])) == NULL) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 /* ESERCIZIO 6 */
 bool hashtable_verificaSomma(THashTable* ht, TValue pair_sum) {
-    // Completare il corpo della funzione
+    /*Scrivere una funzioneche determina se sono presenti nella hash table 
+    due valori TValue la cui somma è uguale al parametro sum. 
+    In caso affermativo, la funzione restituirà true e stamperà a video 
+    i due numeri trovati; altrimenti, restituirà false.*/
+    
     return false;
 }
 
 /* ESERCIZIO 7 */
 void hashtable_changeKey(THashTable *ht, TKey key, TKey newKey) {
-    // Completare il corpo della funzione
+    /*Scrivere una funzione che prende in input un puntatore a una tabella hash 
+    ht oltre ai valori key e newKey. Se esiste un elemento in ht con chiave key, 
+    allora sostituisce la sua chiave con newKey.*/
     
 }
 
