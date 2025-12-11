@@ -192,8 +192,6 @@ bool subsetWithHashTable(int* set_T, int* set_S, int sizeT, int sizeS) {
     for (int i = 0; i < sizeT; i++) {
         hashtable_insert(ht,hash(set_T[i]), set_T[i]);
     }
-
-    hashtable_print(ht);
     
     for (int i = 0; i < sizeS; i++)
     {
@@ -207,12 +205,40 @@ bool subsetWithHashTable(int* set_T, int* set_S, int sizeT, int sizeS) {
 
 /* ESERCIZIO 6 */
 bool hashtable_verificaSomma(THashTable* ht, TValue pair_sum) {
-    /*Scrivere una funzioneche determina se sono presenti nella hash table 
+    /*Scrivere una funzione che determina se sono presenti nella hash table 
     due valori TValue la cui somma è uguale al parametro sum. 
     In caso affermativo, la funzione restituirà true e stamperà a video 
     i due numeri trovati; altrimenti, restituirà false.*/
-    
-    return false;
+    bool flag = false;
+    TValue sum;
+
+    for (int i = 0; i < ht->bucket_number; i++)
+    {
+        TNode * curr1 = ht->bucket[i];
+        while (curr1 != NULL) {
+            for (int j = 0; j < ht->bucket_number; j++) {
+                TNode * curr2 = ht->bucket[j];
+                while (curr2 != NULL) {
+                    sum = value_add(curr1->info.value, curr2->info.value);
+
+                    if (value_equal(sum, pair_sum)) {
+                        flag = true;
+                        //STAMPA DEI VALORI
+                        printf("\n");
+                        value_print(curr1->info.value);
+                        printf(" + ");
+                        value_print(curr2->info.value);
+                        printf(" = ");
+                        value_print(sum);
+                        printf("\n");
+                    }
+                    curr2 = curr2->link;
+                }
+            }
+            curr1 = curr1->link;
+        }
+    }
+    return flag;
 }
 
 /* ESERCIZIO 7 */
