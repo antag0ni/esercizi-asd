@@ -246,6 +246,12 @@ void hashtable_changeKey(THashTable *ht, TKey key, TKey newKey) {
     /*Scrivere una funzione che prende in input un puntatore a una tabella hash 
     ht oltre ai valori key e newKey. Se esiste un elemento in ht con chiave key, 
     allora sostituisce la sua chiave con newKey.*/
-    
+    TValue * pvalue = hashtable_search(ht, key);
+
+    if (pvalue != NULL) {
+        TValue value = *pvalue;
+        hashtable_delete(ht, key);
+        hashtable_insert(ht, newKey, value);
+    }
 }
 
