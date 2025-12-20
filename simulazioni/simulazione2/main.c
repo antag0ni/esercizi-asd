@@ -63,7 +63,7 @@ TList evadi_prestiti(const TBinaryTree bst, THashTable* ht, TQueue* queue);
 TList list_delete_odd(TList list);
 
 // Funzione per verificare se ogni nodo ha entrambi i sottoalberi e calcolare l'altezza
-int is_full_binary_tree(TBinaryTree root, int *height);
+bool is_full_binary_tree(TBinaryTree root, int *height);
 
 int main()
 {
@@ -154,25 +154,75 @@ int main()
 void HT_rimuovi_libri_restituiti(THashTable* ht, TStack* stack)
 {
     /* COMPLETARE QUESTA FUNZIONE - SEGUE CODICE DA RIMUOVERE */
-    
+    while (!stack_is_empty(stack))
+    {
+        TInfo libro = stack_pop(stack);
+        TValue * pvalue = hashtable_search(ht, libro.key);
+        if (pvalue != NULL) 
+        {
+            hashtable_delete(ht, libro.key);
+        }
+    }    
 }
 
 TList evadi_prestiti(const TBinaryTree bst, THashTable* ht, TQueue* queue)
 {
     /* COMPLETARE IL CORPO DELLA FUNZIONE */
-    
-    
+    TList list = list_create();
+    TQueue new_queue = queue_create(10);
+    while (!queue_is_empty(queue))
+    {
+        TInfo richiesta = queue_remove(queue);
+
+        if (hashtable_search(ht, richiesta.key) == NULL && 
+            binarytree_search(bst, richiesta) != NULL)
+        {
+            list = list_insert(list, richiesta);
+            hashtable_insert(ht, richiesta.key, richiesta.value);
+        } 
+        else
+            queue_add(&new_queue, richiesta);
+    }
+    while (!queue_is_empty(&new_queue))
+    {
+        queue_add(queue, queue_remove(&new_queue));
+    }
+    return list;
 }
 
 TList list_delete_odd(TList list)
 {
     /* COMPLETARE IL CORPO DELLA FUNZIONE */
-    
+    if (list == NULL)
+        return list;
+    TList new_list = list_delete_odd(list->link);
+    if ((list->info.key) % 2 == 0)
+        new_list = list_insert(new_list, list->info);
+    return new_list;
 }
 
 // Funzione per verificare se ogni nodo ha entrambi i sottoalberi e calcolare l'altezza
-int is_full_binary_tree(TBinaryTree root, int* height)
+bool is_full_binary_tree(TBinaryTree root, int* height)
 {
     /* COMPLETARE IL CORPO DELLA FUNZIONE */
-    
+    //caso in cui l'albero non esista
+    if (root == NULL) 
+    {
+        *height = 0;
+        return true;
+    }
+    //caso in cui la radice è una foglia
+    if (root->left == NULL && root->right == NULL)
+    {
+        *height = 1;
+        return true;
+    }
+    //divido in due sotto alberi e calcolo le altezze separatamente
+    int left_height, right_height;
+    bool full_left = is_full_binary_tree(root->left, &left_height);
+    bool full_right = is_full_binary_tree(root->right, &right_height);
+    //prendo l'altezza maggiore delle due e la incremento
+    *height = (left_height > right_height ? left_height : right_height) + 1;
+    //ritorna vero se i sotto alberi esistono e sono pieni
+    return (root->left!=NULL && root->right!=NULL && full_left && full_right);
 }
