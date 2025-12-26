@@ -69,8 +69,11 @@ int main()
     hashtable_print(corsi);
 
     /* INSERIRE QUI LA LOGICA APPLICATIVA */
-
-
+    bst_updateHT(studenti, corsi);
+    printf("\nCorsi aggiornati:\n");
+    hashtable_print(corsi);
+    printf("\nCorsi con numero maggiore di iscritti:\n");
+    hashtable_printHighest(corsi);
 
     hashtable_destroy(corsi);
     binarytree_destroy(studenti);
@@ -79,13 +82,41 @@ int main()
 
 void bst_updateHT(TBinaryTree tree, THashTable *ht)
 {
-    /* INSERIRE QUI IL CORPO DELLA FUNZIONE */
-
+    /* aggiorna la hash table dei corsi con il numero corretto di iscritti 
+       per corso sulla base dell'elenco di studenti contenuto nel bst */
+    if (tree == NULL)
+        return;
+    TValue * pvalue = hashtable_search(ht, tree->info.codiceCorso);
+    if (pvalue)
+        pvalue->iscritti += 1;
+    bst_updateHT(tree->left, ht);
+    bst_updateHT(tree->right, ht);   
 }
 
 void hashtable_printHighest(THashTable *ht)
 {
-
-    /* INSERIRE QUI IL CORPO DELLA FUNZIONE */
-
+    /* stampa il nome del corso (o dei corsi) con il numero massimo di studenti iscrittiE */
+    int max = 0;
+    TList corsiHighest = list_create();
+    for (int i = 0; i < ht->bucket_number; i++)
+    {
+        TNode * curr = ht->bucket[i];
+        while (curr)
+        {
+            if (curr->info.value.iscritti > max)
+                max = curr->info.value.iscritti;
+            curr = curr->link;
+        }
+    }
+    for (int i = 0; i < ht->bucket_number; i++)
+    {
+        TNode * curr = ht->bucket[i];
+        while (curr)
+        {
+            if (curr->info.value.iscritti == max)
+                corsiHighest = list_insert(corsiHighest, curr->info);
+            curr = curr->link;
+        }
+    }
+    list_print(corsiHighest);
 }

@@ -55,8 +55,11 @@ int patient_hasExemption(TInfo patient){
 }
 
 TBinaryTree bst_toHT_exemption(TBinaryTree bst, THashTable* ht) {
-
-    /* COMPLETARE QUESTA FUNZIONE */
+/*    bst_toHT_exemption(bst, ht): funzione RICORSIVA che copia da bst a ht tutti i
+ *    pazienti con ID la cui ultima cifra sia 0, rimuovendoli da bst.
+ *    Se un paziente di bst gia' esiste in ht esso non verra'
+ *    duplicato (ma verra' comunque rimosso da bst). 
+ */ 
     
 }
 
