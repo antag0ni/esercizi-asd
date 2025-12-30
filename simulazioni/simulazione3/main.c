@@ -38,21 +38,11 @@
  *
  */
 
-/* *************
- * COGNOME: .............
- * NOME: ................
- * MATRICOLA: ...........
- */
-
 #include <stdio.h>
 #include "hashtable.h"
 #include "binary_tree.h"
 #include "TArray.h"
 
-int patient_hasExemption(TInfo patient){
-    /* COMPLETARE QUESTA FUNZIONE */
-    
-}
 
 TBinaryTree bst_toHT_exemption(TBinaryTree bst, THashTable* ht) {
 /*    bst_toHT_exemption(bst, ht): funzione RICORSIVA che copia da bst a ht tutti i
@@ -60,28 +50,69 @@ TBinaryTree bst_toHT_exemption(TBinaryTree bst, THashTable* ht) {
  *    Se un paziente di bst gia' esiste in ht esso non verra'
  *    duplicato (ma verra' comunque rimosso da bst). 
  */ 
-    
+    if (bst == NULL)
+        return NULL;
+    bst->left = bst_toHT_exemption(bst->left, ht);
+    bst->right = bst_toHT_exemption(bst->right, ht);
+    TKey key = bst->info.key;
+    if (key % 10 == 0)
+    {
+        if (!hashtable_search(ht, key))
+            hashtable_insert(ht, key, bst->info.value);
+        bst = binarytree_delete(bst, bst->info);
+    } 
+    return bst;
 }
 
 void ht_toArray_range(THashTable* ht, TArray* array, TKey min, TKey max) {
-
-    /* COMPLETARE QUESTA FUNZIONE */
-
-
+    /* ht_toArray_range(ht, array, min, max): funzione ITERATIVA che copia da ht ad array
+     * tutti i pazienti con ID compreso tra min e max e, inoltre, li rimuove da ht. */
+    for (int i = 0; i < ht->bucket_number; i++)
+    {
+        TNode * curr = ht->bucket[i];
+        while (curr)
+        {
+            if (curr->info.key < max && curr->info.key > min)
+                array_add(array, curr->info);
+            curr = curr->link;
+        }
+    }
 }
 
 TBinaryTree binarytree_removeLast(TBinaryTree bst) {
-
-    /* COMPLETARE QUESTA FUNZIONE */
-
+    /* binarytree_removeLast(bst): funzione RICORSIVA che rimuove da bst l'ultimo
+       elemento in ordine di ID (ossia il paziente con ID massimo). 
+       Restituisce il bst aggiornato. */
+    if (bst == NULL)
+        return NULL;
+    if (bst->right == NULL)
+        return binarytree_delete(bst, bst->info);
+    bst->right = binarytree_removeLast(bst->right);
+    return bst;
+}
+void info_swap(TInfo *a, TInfo *b) {
+    TInfo temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 void print_orderedArray_exemptions(TArray *array) {
-
-    /* COMPLETARE QUESTA FUNZIONE */
-
+    /* print_orderedArray(array): funzione ITERATIVA che stampa in ordine crescente di ID
+       solo i pazienti con esenzione. Si possono utilizzare strutture dati di appoggio. */
+    int len = array_length(array);
+    if (len == 0)
+        return;
+    TInfo temp[len];
+    for (int i = 0; i < len; i++)
+        temp[i] = array_get(array, i);
+    for (int i = 0; i < len-1; i++)
+        for (int j = i+1; j < len; j++)
+            if (info_greater(temp[i], temp[j]))
+                info_swap(&temp[i], &temp[j]);
+    for (int i = 0; i < len; i++)
+        if (temp[i].key % 10 == 0)
+            info_print(temp[i]);    
 }
-
 
 int main() {
     TBinaryTree elenco1 = binarytree_create();

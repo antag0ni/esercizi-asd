@@ -22,6 +22,12 @@ void array_destroy(TArray *a) {
     a->length = 0;
     a->size = 0;
 }
+TInfo array_remove(TArray *a) {
+    assert(a->length > 0);
+    TInfo info = a->items[a->length - 1];
+    array_resize(a, a->length - 1, LINEAR);
+    return info;
+}
 
 /* Ridimensiona un array dinamico con Ridimensionamento Lineare
  * PRE :
