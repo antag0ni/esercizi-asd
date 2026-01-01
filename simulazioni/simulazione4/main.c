@@ -72,7 +72,8 @@ TBinaryTree bst_to_ht_by_matricola(TBinaryTree bst, THashTable *ht, int min, int
     bst->right = bst_to_ht_by_matricola(bst->right, ht, min, max);
     if (bst->info.key <= max && bst->info.key >= min)
     {
-        hashtable_insert(ht, bst->info.key, bst->info.value);
+        if (hashtable_search(ht, bst->info.key) == NULL)
+            hashtable_insert(ht, bst->info.key, bst->info.value);
         bst = binarytree_delete(bst, bst->info);
     }
     return bst;
@@ -80,22 +81,41 @@ TBinaryTree bst_to_ht_by_matricola(TBinaryTree bst, THashTable *ht, int min, int
 
 void ht_remove_by_divisor_number(THashTable *ht, int number)
 {
-
     /* COMPLETARE QUESTA FUNZIONE */
-
+    for (int i = 0; i < ht->bucket_number; i++)
+    {
+        TNode * curr = ht->bucket[i];
+        while (curr) 
+        {   
+            if (curr->info.key % number == 0)
+                hashtable_delete(ht, curr->info.key);
+            curr = curr->link;
+        }
+    }
 }
 
 void print_student_by_reservation(TDQueue *queue, TBinaryTree bst, int codice_esame)
 {
-
     /* COMPLETARE QUESTA FUNZIONE */
-    
+    TInfo2 curr;
+    TInfo elemento;
+    while (!dqueue_is_empty(queue))
+    {
+        curr = dqueue_remove(queue);
+        if (curr.codice_esame == codice_esame)
+        {   
+            elemento.key = curr.key;
+            TBTNode * trovato = binarytree_search(bst, elemento);
+            if (trovato)
+                info_print(trovato->info);
+        }  
+    }
 }
 
 int main()
 {
-    int min = 1300, max = 2000, number = 1, codice_esame = 1818;
-    // int min = 2000, max = 4000, number = 2, codice_esame = 1818;
+    //int min = 1300, max = 2000, number = 1, codice_esame = 1818;
+    int min = 2000, max = 4000, number = 2, codice_esame = 1818;
 
     TBinaryTree elenco1 = binarytree_create();
     elenco1 = binarytree_insert(elenco1, (TInfo){1321, "Mario", "Rossi"});
