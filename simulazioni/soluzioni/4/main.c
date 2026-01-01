@@ -65,16 +65,19 @@
 
 TBinaryTree bst_to_ht_by_matricola(TBinaryTree bst, THashTable *ht, int min, int max)
 {
+
     /* COMPLETARE QUESTA FUNZIONE */
-    if (bst == NULL)
-        return NULL;
-    bst->left = bst_to_ht_by_matricola(bst->left, ht, min, max);
-    bst->right = bst_to_ht_by_matricola(bst->right, ht, min, max);
-    if (bst->info.key <= max && bst->info.key >= min)
+    if (bst != NULL)
     {
-        hashtable_insert(ht, bst->info.key, bst->info.value);
-        bst = binarytree_delete(bst, bst->info);
+        bst->left = bst_to_ht_by_matricola(bst->left, ht, min, max);
+        bst->right = bst_to_ht_by_matricola(bst->right, ht, min, max);
+        if (bst->info.key >= min && bst->info.key <= max)
+        {
+            hashtable_insert(ht, bst->info.key, bst->info.value);
+            bst = binarytree_delete(bst, bst->info);
+        }
     }
+
     return bst;
 }
 
@@ -82,14 +85,42 @@ void ht_remove_by_divisor_number(THashTable *ht, int number)
 {
 
     /* COMPLETARE QUESTA FUNZIONE */
+    TArray ta = array_create(0);
+    for (int i = 0; i < ht->bucket_number; ++i)
+        for (TNode *node = ht->bucket[i]; node != NULL; node = node->link)
+            if ((node->info.key % number) == 0)
+            {
+                push_back(node->info, &ta);
+            }
 
+    for (int i = 0; i < ta.length; i++)
+    {
+        hashtable_delete(ht, ta.item[i].key);
+    }
+    return;
 }
 
 void print_student_by_reservation(TDQueue *queue, TBinaryTree bst, int codice_esame)
 {
 
     /* COMPLETARE QUESTA FUNZIONE */
-    
+    TInfo2 prenotazione_corrente;
+    TInfo cerca;
+    TBTNode *elemento;
+    while (!dqueue_is_empty(queue))
+    {
+        prenotazione_corrente = dqueue_remove(queue);
+        if (prenotazione_corrente.codice_esame == codice_esame)
+        {
+            cerca.key = prenotazione_corrente.key;
+            elemento = binarytree_search(bst, cerca);
+            if (elemento != NULL)
+                info_print(elemento->info);
+            printf("\n");
+        }
+    }
+
+    return;
 }
 
 int main()
